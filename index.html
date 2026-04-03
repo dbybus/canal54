@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Canal 54 — Café Culturel Genevois</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Libre+Baskerville:ital@1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --black: #0a0a08; --cream: #f0ebe0; --rust: #c44a1f; --rust-dark: #8f3214;
+    --muted: #6b6557; --border: rgba(240,235,224,0.12);
+    --mono: 'DM Mono', monospace; --display: 'Bebas Neue', sans-serif; --serif: 'Libre Baskerville', serif;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--black); color: var(--cream); font-family: var(--mono); font-weight: 300; font-size: 14px; letter-spacing: 0.02em; overflow-x: hidden; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; border-bottom: 0.5px solid var(--border); backdrop-filter: blur(12px); background: rgba(10,10,8,0.75); }
+  .nav-logo { display: flex; align-items: center; text-decoration: none; }
+  .logo-svg { height: 28px; width: auto; fill: var(--cream); transition: fill 0.2s; }
+  .nav-logo:hover .logo-svg { fill: rgba(240,235,224,0.75); }
+  .logo-svg-footer { height: 22px; opacity: 0.6; }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--cream); }
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+  .nav-tag { font-size: 10px; letter-spacing: 0.2em; color: var(--rust); border: 0.5px solid var(--rust); padding: 4px 10px; text-transform: uppercase; }
+  .admin-btn { font-size: 10px; letter-spacing: 0.18em; color: var(--muted); border: 0.5px solid var(--muted); padding: 5px 12px; text-transform: uppercase; cursor: pointer; background: none; font-family: var(--mono); transition: color 0.2s, border-color 0.2s; }
+  .admin-btn:hover { color: var(--cream); border-color: var(--cream); }
+
+  /* HERO */
+  #hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 40px 64px; position: relative; overflow: hidden; }
+  .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 80% 40%, rgba(196,74,31,0.18) 0%, transparent 70%), radial-gradient(ellipse 40% 60% at 10% 80%, rgba(196,74,31,0.08) 0%, transparent 60%), var(--black); z-index: 0; }
+  .hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(240,235,224,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(240,235,224,0.03) 1px, transparent 1px); background-size: 80px 80px; z-index: 0; }
+  .hero-content { position: relative; z-index: 1; max-width: 1100px; }
+  .hero-eyebrow { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--rust); margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+  .hero-eyebrow::before { content: ''; display: block; width: 32px; height: 0.5px; background: var(--rust); }
+  .hero-meta { display: flex; gap: 48px; align-items: flex-end; }
+  .hero-desc { max-width: 380px; color: var(--muted); line-height: 1.7; font-size: 13px; }
+  .hero-cta { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; margin-left: auto; }
+  .btn-primary { background: var(--rust); color: var(--cream); text-decoration: none; padding: 14px 32px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; transition: background 0.2s, transform 0.1s; display: inline-block; border: none; cursor: pointer; }
+  .btn-primary:hover { background: var(--rust-dark); transform: translateX(2px); }
+  .btn-ghost { color: var(--muted); text-decoration: none; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; border-bottom: 0.5px solid var(--border); padding-bottom: 2px; transition: color 0.2s, border-color 0.2s; background: none; cursor: pointer; font-family: var(--mono); }
+  .btn-ghost:hover { color: var(--cream); border-color: var(--cream); }
+
+  /* TICKER */
+  .ticker-wrap { border-top: 0.5px solid var(--border); border-bottom: 0.5px solid var(--border); overflow: hidden; padding: 14px 0; background: rgba(196,74,31,0.06); }
+  .ticker { display: flex; animation: ticker 28s linear infinite; white-space: nowrap; }
+  .ticker-item { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--rust); padding: 0 40px; flex-shrink: 0; }
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* SECTIONS */
+  section { padding: 100px 40px; }
+  .section-label { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--rust); margin-bottom: 48px; display: flex; align-items: center; gap: 12px; }
+  .section-label::after { content: ''; display: block; flex: 1; height: 0.5px; background: var(--border); max-width: 120px; }
+  .section-title { font-family: var(--display); font-size: clamp(40px, 6vw, 80px); letter-spacing: 0.06em; line-height: 1; margin-bottom: 24px; }
+
+  /* PROG */
+  #prog { border-top: 0.5px solid var(--border); }
+  .prog-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 56px; }
+  .events-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+  .event-card { background: var(--black); padding: 32px 28px; position: relative; overflow: hidden; transition: background 0.2s; }
+  .event-card:hover { background: rgba(196,74,31,0.07); }
+  .event-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--rust); opacity: 0; transition: opacity 0.2s; }
+  .event-card:hover::before { opacity: 1; }
+  .event-date { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--rust); margin-bottom: 16px; }
+  .event-name { font-family: var(--display); font-size: 28px; letter-spacing: 0.05em; line-height: 1.1; margin-bottom: 12px; color: var(--cream); }
+  .event-type { font-size: 11px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; }
+  .event-time { position: absolute; bottom: 28px; right: 28px; font-size: 11px; color: var(--muted); font-style: italic; }
+
+  /* RECORDING */
+  #recording { border-top: 0.5px solid var(--border); background: linear-gradient(180deg, rgba(196,74,31,0.04) 0%, transparent 100%); }
+  .recording-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .recording-visual { position: relative; aspect-ratio: 1; max-width: 440px; }
+  .vinyl { width: 100%; height: 100%; border-radius: 50%; border: 0.5px solid rgba(240,235,224,0.1); background: repeating-radial-gradient(circle at center, #111 0px, #0d0d0d 2px, #111 4px); animation: spin 12s linear infinite; display: flex; align-items: center; justify-content: center; }
+  .vinyl-label { width: 38%; height: 38%; border-radius: 50%; background: var(--rust); display: flex; align-items: center; justify-content: center; }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .sets-list { display: flex; flex-direction: column; }
+  .set-item { display: flex; align-items: center; gap: 20px; padding: 20px 0; border-bottom: 0.5px solid var(--border); transition: padding-left 0.2s; cursor: pointer; }
+  .set-item:hover { padding-left: 8px; }
+  .set-num { font-size: 10px; color: var(--rust); letter-spacing: 0.15em; width: 24px; flex-shrink: 0; }
+  .set-info { flex: 1; }
+  .set-artist { font-family: var(--display); font-size: 20px; letter-spacing: 0.05em; color: var(--cream); line-height: 1; margin-bottom: 4px; }
+  .set-date { font-size: 11px; color: var(--muted); letter-spacing: 0.12em; }
+  .set-play { width: 36px; height: 36px; border: 0.5px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: border-color 0.2s, background 0.2s; flex-shrink: 0; }
+  .set-item:hover .set-play { border-color: var(--rust); background: var(--rust); }
+  .play-icon { width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 8px solid var(--muted); margin-left: 2px; transition: border-left-color 0.2s; }
+  .set-item:hover .play-icon { border-left-color: var(--cream); }
+
+  /* BAR */
+  #bar { border-top: 0.5px solid var(--border); }
+  .bar-layout { display: grid; grid-template-columns: 1.2fr 1fr; gap: 80px; align-items: start; }
+  .hours-block { margin-top: 40px; }
+  .hours-row { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; }
+  .hours-day { color: var(--muted); letter-spacing: 0.1em; }
+  .hours-row.today { background: rgba(196,74,31,0.06); padding-left: 12px; margin-left: -12px; }
+  .hours-row.today .hours-day { color: var(--rust); }
+  .address-block { margin-top: 48px; padding: 28px; border: 0.5px solid var(--border); }
+  .address-label { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--rust); margin-bottom: 12px; }
+  .address-text { font-family: var(--display); font-size: 22px; letter-spacing: 0.06em; line-height: 1.4; color: var(--cream); }
+  .map-placeholder { aspect-ratio: 4/3; background: #111; border: 0.5px solid var(--border); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .map-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(240,235,224,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(240,235,224,0.04) 1px, transparent 1px); background-size: 40px 40px; }
+  .map-pin { position: relative; z-index: 1; text-align: center; }
+  .map-pin-dot { width: 12px; height: 12px; background: var(--rust); border-radius: 50%; margin: 0 auto 8px; box-shadow: 0 0 0 4px rgba(196,74,31,0.2), 0 0 0 8px rgba(196,74,31,0.08); }
+  .map-pin-label { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cream); }
+  .social-links { display: flex; gap: 16px; margin-top: 32px; }
+  .social-link { width: 36px; height: 36px; border: 0.5px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--muted); text-decoration: none; font-size: 11px; transition: color 0.2s, border-color 0.2s; }
+  .social-link:hover { color: var(--cream); border-color: var(--cream); }
+
+  /* SHOP */
+  #shop { border-top: 0.5px solid var(--border); }
+  .shop-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 56px; }
+  .product-card { position: relative; cursor: pointer; }
+  .product-img { aspect-ratio: 3/4; background: #111; border: 0.5px solid var(--border); margin-bottom: 16px; display: flex; align-items: center; justify-content: center; overflow: hidden; transition: border-color 0.2s; position: relative; }
+  .product-card:hover .product-img { border-color: rgba(196,74,31,0.5); }
+  .tshirt-svg { width: 120px; opacity: 0.7; transition: opacity 0.2s, transform 0.3s; }
+  .product-card:hover .tshirt-svg { opacity: 1; transform: scale(1.04); }
+  .product-badge { position: absolute; top: 12px; right: 12px; background: var(--rust); color: var(--cream); font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; padding: 4px 8px; }
+  .product-name { font-family: var(--display); font-size: 18px; letter-spacing: 0.05em; color: var(--cream); margin-bottom: 6px; }
+  .product-price { font-size: 13px; color: var(--rust); letter-spacing: 0.1em; }
+
+  /* NEWSLETTER */
+  #newsletter { border-top: 0.5px solid var(--border); text-align: center; padding: 80px 40px; }
+  .nl-title { font-family: var(--display); font-size: clamp(36px, 5vw, 60px); letter-spacing: 0.08em; margin-bottom: 16px; }
+  .nl-sub { color: var(--muted); font-size: 13px; margin-bottom: 40px; }
+  .nl-form { display: flex; max-width: 480px; margin: 0 auto; }
+  .nl-input { flex: 1; background: rgba(240,235,224,0.05); border: 0.5px solid var(--border); border-right: none; color: var(--cream); padding: 14px 20px; font-family: var(--mono); font-size: 13px; outline: none; transition: border-color 0.2s; }
+  .nl-input::placeholder { color: var(--muted); }
+  .nl-input:focus { border-color: rgba(196,74,31,0.5); }
+  .nl-btn { background: var(--rust); color: var(--cream); border: none; padding: 14px 28px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+  .nl-btn:hover { background: var(--rust-dark); }
+
+  /* FOOTER */
+  footer { border-top: 0.5px solid var(--border); padding: 40px; display: flex; justify-content: space-between; align-items: center; }
+  .footer-links { display: flex; gap: 28px; list-style: none; }
+  .footer-links a { color: var(--muted); text-decoration: none; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--cream); }
+  .footer-copy { font-size: 11px; color: rgba(107,101,87,0.5); }
+
+  /* ===== ADMIN PANEL ===== */
+  #admin-overlay { display: none; position: fixed; inset: 0; z-index: 999; background: #080806; }
+  #admin-overlay.open { display: flex; }
+
+  .admin-sidebar { width: 250px; flex-shrink: 0; border-right: 0.5px solid var(--border); display: flex; flex-direction: column; background: #060604; height: 100vh; position: sticky; top: 0; }
+  .admin-brand { padding: 28px 28px 24px; border-bottom: 0.5px solid var(--border); }
+  .admin-brand-label { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--rust); margin-bottom: 10px; }
+  .admin-nav { display: flex; flex-direction: column; gap: 3px; padding: 20px 14px; flex: 1; }
+  .admin-nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); cursor: pointer; border-radius: 2px; transition: color 0.15s, background 0.15s; border: none; background: none; font-family: var(--mono); width: 100%; text-align: left; }
+  .admin-nav-item:hover { color: var(--cream); background: rgba(240,235,224,0.04); }
+  .admin-nav-item.active { color: var(--cream); background: rgba(196,74,31,0.1); }
+  .admin-nav-item.active .nav-dot { background: var(--rust); }
+  .nav-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(107,101,87,0.4); flex-shrink: 0; transition: background 0.15s; }
+  .nav-count { margin-left: auto; font-size: 10px; background: rgba(196,74,31,0.18); color: var(--rust); padding: 2px 8px; border-radius: 10px; }
+  .admin-sidebar-footer { padding: 20px 14px 28px; border-top: 0.5px solid var(--border); }
+  .close-admin-btn { width: 100%; padding: 11px; background: none; border: 0.5px solid var(--border); color: var(--muted); font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer; transition: color 0.2s, border-color 0.2s; }
+  .close-admin-btn:hover { color: var(--cream); border-color: rgba(240,235,224,0.3); }
+  .topbar-close-btn { background: none; border: 0.5px solid var(--border); color: var(--muted); width: 36px; height: 36px; font-size: 16px; cursor: pointer; transition: color 0.2s, border-color 0.2s, background 0.2s; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .topbar-close-btn:hover { color: var(--cream); border-color: rgba(240,235,224,0.3); background: rgba(240,235,224,0.05); }
+  #admin-fixed-close { position: absolute; top: 16px; right: 16px; z-index: 1050; background: transparent; color: rgba(240,235,224,0.35); border: none; width: 32px; height: 32px; font-size: 18px; cursor: pointer; align-items: center; justify-content: center; display: none; transition: color 0.2s; font-family: var(--mono); }
+  #admin-fixed-close:hover { color: var(--cream); }
+  .admin-brand { padding: 28px 28px 24px; border-bottom: 0.5px solid var(--border); position: relative; }
+
+  .admin-main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; min-width: 0; }
+  .admin-topbar { padding: 28px 40px; border-bottom: 0.5px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+  .admin-section-title { font-family: var(--display); font-size: 32px; letter-spacing: 0.08em; }
+  .admin-content { padding: 36px 40px; flex: 1; }
+  .admin-tab { display: flex; flex-direction: column; height: 100%; }
+
+  .btn-add { display: flex; align-items: center; gap: 8px; background: var(--rust); color: var(--cream); border: none; padding: 10px 20px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+  .btn-add:hover { background: var(--rust-dark); }
+
+  .admin-table { width: 100%; border-collapse: collapse; }
+  .admin-table th { text-align: left; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); padding: 0 0 14px 0; border-bottom: 0.5px solid var(--border); font-weight: 400; padding-right: 20px; }
+  .admin-table td { padding: 15px 20px 15px 0; border-bottom: 0.5px solid rgba(240,235,224,0.05); font-size: 13px; vertical-align: middle; }
+  .admin-table tr:hover td { background: rgba(240,235,224,0.015); }
+  .td-name { font-family: var(--display); font-size: 16px; letter-spacing: 0.04em; color: var(--cream); }
+  .td-muted { color: var(--muted); font-size: 12px; letter-spacing: 0.05em; }
+  .td-badge { display: inline-block; padding: 3px 9px; background: rgba(196,74,31,0.12); color: var(--rust); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; }
+  .td-actions { display: flex; gap: 8px; }
+  .btn-edit, .btn-del { padding: 6px 12px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; border: 0.5px solid; transition: all 0.15s; }
+  .btn-edit { color: var(--muted); border-color: var(--border); background: none; }
+  .btn-edit:hover { color: var(--cream); border-color: rgba(240,235,224,0.3); }
+  .btn-del { color: #c55; border-color: rgba(204,85,85,0.25); background: none; }
+  .btn-del:hover { color: #f77; border-color: #c55; background: rgba(204,85,85,0.07); }
+
+  .empty-state { padding: 60px 0; text-align: center; }
+  .empty-state p { font-size: 13px; letter-spacing: 0.08em; color: var(--muted); margin-top: 8px; }
+
+  /* MODAL */
+  .modal-backdrop { display: none; position: fixed; inset: 0; z-index: 1100; background: rgba(0,0,0,0.75); align-items: center; justify-content: center; }
+  .modal-backdrop.open { display: flex; }
+  .modal { background: #0e0e0b; border: 0.5px solid rgba(240,235,224,0.2); width: 520px; max-width: 95vw; max-height: 90vh; overflow-y: auto; padding: 40px; }
+  .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+  .modal-title { font-family: var(--display); font-size: 24px; letter-spacing: 0.08em; }
+  .modal-close { background: none; border: none; color: var(--muted); font-size: 18px; cursor: pointer; transition: color 0.15s; line-height: 1; }
+  .modal-close:hover { color: var(--cream); }
+  .form-group { margin-bottom: 20px; }
+  .form-label { display: block; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .form-input, .form-select { width: 100%; background: rgba(240,235,224,0.05); border: 0.5px solid rgba(240,235,224,0.15); color: var(--cream); padding: 12px 14px; font-family: var(--mono); font-size: 13px; outline: none; transition: border-color 0.2s; appearance: none; -webkit-appearance: none; }
+  .form-input:focus, .form-select:focus { border-color: rgba(196,74,31,0.6); }
+  .form-input::placeholder { color: var(--muted); }
+  .form-select option { background: #0e0e0b; color: var(--cream); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .modal-actions { display: flex; gap: 12px; margin-top: 32px; justify-content: flex-end; }
+  .btn-cancel { background: none; border: 0.5px solid var(--border); color: var(--muted); padding: 10px 20px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer; transition: all 0.15s; }
+  .btn-cancel:hover { color: var(--cream); border-color: rgba(240,235,224,0.3); }
+  .btn-save { background: var(--rust); color: var(--cream); border: none; padding: 10px 24px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+  .btn-save:hover { background: var(--rust-dark); }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 32px; right: 32px; z-index: 2000; background: #181814; border: 0.5px solid rgba(196,74,31,0.35); color: var(--cream); padding: 14px 20px; font-size: 12px; letter-spacing: 0.1em; display: flex; align-items: center; gap: 10px; transform: translateY(80px); opacity: 0; transition: all 0.3s; pointer-events: none; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--rust); flex-shrink: 0; }
+
+  /* Confirm */
+  .confirm-msg { color: var(--muted); font-size: 13px; line-height: 1.7; margin-bottom: 8px; }
+  .confirm-item-name { color: var(--cream); font-family: var(--display); font-size: 20px; letter-spacing: 0.05em; margin-bottom: 24px; }
+
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    #hero { padding: 0 24px 48px; }
+    .hero-meta { flex-direction: column; gap: 28px; }
+    .hero-cta { margin-left: 0; }
+    section { padding: 72px 24px; }
+    .events-grid { grid-template-columns: 1fr; }
+    .recording-layout, .bar-layout { grid-template-columns: 1fr; gap: 48px; }
+    .shop-grid { grid-template-columns: repeat(2, 1fr); }
+    footer { flex-direction: column; gap: 24px; text-align: center; }
+    .footer-links { flex-wrap: wrap; justify-content: center; }
+    .admin-sidebar { width: 200px; }
+    .admin-topbar, .admin-content { padding-left: 24px; padding-right: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <svg class="logo-svg" viewBox="0 0 1190 185.265" xmlns="http://www.w3.org/2000/svg">
+      <path d="M94.098,143.965c-29.692,0-41.568-18.752-41.568-52.149c0-33.909,12.865-51.738,42.807-51.738c28.706,0,38.108,11.376,40.086,34.376h44.788c-3.465-45-26.725-70.727-85.615-70.727c-63.594,0-87.598,42.588-87.598,86.634c0,45.276,23.753,88.983,87.349,88.983c60.376,0,82.894-26.89,86.856-68.89h-45.286C134.188,132.455,123.547,143.965,94.098,143.965z"/>
+      <polygon points="771.009,132.455 771.009,15.455 728.009,15.455 728.009,130.857 728.009,131.5 728.009,172.455 771.864,172.455 841.009,172.455 841.009,172.455 841.009,132.455 841.009,132.455"/>
+      <polygon points="194.009,14.455 194.009,59.455 273.441,59.455 191.69,139.903 222.904,171.644 305.009,89.446 305.009,172.455 346.009,172.455 346.009,51.923 346.009,14.455 310.126,14.455"/>
+      <polygon points="550.009,14.455 550.009,59.455 629.162,59.455 548.582,139.903 579.349,171.644 661.009,89.187 661.009,172.455 702.009,172.455 702.009,51.923 702.009,14.455 667.017,14.455"/>
+      <path d="M1152.009,101.455v-87h-60.544h-0.296h-0.261l-66.863,95.452l-0.082,29.548h85.046v36h43v-36h30v-32.614v-5.386H1152.009z M1109.009,101.455h-31.195l31.195-48.757V101.455z"/>
+      <path d="M949.29,63.437c-17.915,0-30.235,3.797-38.171,12.631l1.614-25.613h84.276v-36h-121.33l-5.17,86.213l0,0l-0.407,9.787h41.429c4.575-9,12.456-11.346,28.354-11.346c17.827,0,26.809,3.376,26.809,20.236c0,17.833-8.913,24.838-29.389,24.838c-18.548,0-26.012-4.728-27.696-19.728h-44.323c0.961,31,20.954,50.513,69.128,50.513c50.102,0,74.673-20.383,74.673-57.001C1009.085,83.043,982.291,63.437,949.29,63.437z"/>
+      <polygon points="484.547,15.455 484.311,15.455 412.009,105.839 412.009,15.455 371.009,15.455 371.009,172.455 411.728,172.455 411.728,172.455 483.009,80.701 483.009,172.455 524.009,172.455 524.009,15.455 484.584,15.455"/>
+    </svg>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#prog">Programme</a></li>
+    <li><a href="#recording">Recording</a></li>
+    <li><a href="#bar">Bar</a></li>
+    <li><a href="#shop">Shop</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="admin-btn" id="open-admin-btn">Admin ⚙</button>
+    <span class="nav-tag">Genève</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Café Culturel Genevois · Bd St-George 54</p>
+    <div style="margin-bottom:32px;">
+      <svg class="logo-svg" style="height:clamp(60px,10vw,130px);width:auto;" viewBox="0 0 1190 185.265" xmlns="http://www.w3.org/2000/svg">
+        <path d="M94.098,143.965c-29.692,0-41.568-18.752-41.568-52.149c0-33.909,12.865-51.738,42.807-51.738c28.706,0,38.108,11.376,40.086,34.376h44.788c-3.465-45-26.725-70.727-85.615-70.727c-63.594,0-87.598,42.588-87.598,86.634c0,45.276,23.753,88.983,87.349,88.983c60.376,0,82.894-26.89,86.856-68.89h-45.286C134.188,132.455,123.547,143.965,94.098,143.965z"/>
+        <polygon points="771.009,132.455 771.009,15.455 728.009,15.455 728.009,130.857 728.009,131.5 728.009,172.455 771.864,172.455 841.009,172.455 841.009,172.455 841.009,132.455 841.009,132.455"/>
+        <polygon points="194.009,14.455 194.009,59.455 273.441,59.455 191.69,139.903 222.904,171.644 305.009,89.446 305.009,172.455 346.009,172.455 346.009,51.923 346.009,14.455 310.126,14.455"/>
+        <polygon points="550.009,14.455 550.009,59.455 629.162,59.455 548.582,139.903 579.349,171.644 661.009,89.187 661.009,172.455 702.009,172.455 702.009,51.923 702.009,14.455 667.017,14.455"/>
+        <path d="M1152.009,101.455v-87h-60.544h-0.296h-0.261l-66.863,95.452l-0.082,29.548h85.046v36h43v-36h30v-32.614v-5.386H1152.009z M1109.009,101.455h-31.195l31.195-48.757V101.455z"/>
+        <path d="M949.29,63.437c-17.915,0-30.235,3.797-38.171,12.631l1.614-25.613h84.276v-36h-121.33l-5.17,86.213l0,0l-0.407,9.787h41.429c4.575-9,12.456-11.346,28.354-11.346c17.827,0,26.809,3.376,26.809,20.236c0,17.833-8.913,24.838-29.389,24.838c-18.548,0-26.012-4.728-27.696-19.728h-44.323c0.961,31,20.954,50.513,69.128,50.513c50.102,0,74.673-20.383,74.673-57.001C1009.085,83.043,982.291,63.437,949.29,63.437z"/>
+        <polygon points="484.547,15.455 484.311,15.455 412.009,105.839 412.009,15.455 371.009,15.455 371.009,172.455 411.728,172.455 411.728,172.455 483.009,80.701 483.009,172.455 524.009,172.455 524.009,15.455 484.584,15.455"/>
+      </svg>
+      <p style="font-family:var(--serif);font-style:italic;font-size:clamp(14px,2vw,22px);color:var(--rust);letter-spacing:0.06em;margin-top:16px;">Café Culturel Genevois</p>
+    </div>
+    <div class="hero-meta">
+      <p class="hero-desc">Bar, musique, culture — au cœur de Genève depuis toujours. Un espace vivant où se croisent DJs résidents, artistes invités et amateurs de son.</p>
+      <div class="hero-cta">
+        <a href="#prog" class="btn-primary">Voir le programme →</a>
+        <a href="#recording" class="btn-ghost">Écouter les sets</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span class="ticker-item">Ouvert lundi – samedi</span><span class="ticker-item">·</span>
+    <span class="ticker-item">Truck Thomas — 23 avril</span><span class="ticker-item">·</span>
+    <span class="ticker-item">Didier — 18 avril</span><span class="ticker-item">·</span>
+    <span class="ticker-item">Canal Recording online</span><span class="ticker-item">·</span>
+    <span class="ticker-item">Boulevard St-George 54</span><span class="ticker-item">·</span>
+    <span class="ticker-item">Ouvert lundi – samedi</span><span class="ticker-item">·</span>
+    <span class="ticker-item">Truck Thomas — 23 avril</span><span class="ticker-item">·</span>
+    <span class="ticker-item">Didier — 18 avril</span><span class="ticker-item">·</span>
+    <span class="ticker-item">Canal Recording online</span><span class="ticker-item">·</span>
+    <span class="ticker-item">Boulevard St-George 54</span><span class="ticker-item">·</span>
+  </div>
+</div>
+
+<!-- PROGRAMME -->
+<section id="prog">
+  <div class="prog-header">
+    <div><p class="section-label">Programme</p><h2 class="section-title">À venir</h2></div>
+    <a href="#" class="btn-ghost">Programme complet →</a>
+  </div>
+  <div class="events-grid" id="events-grid"></div>
+</section>
+
+<!-- RECORDING -->
+<section id="recording">
+  <div class="recording-layout">
+    <div>
+      <p class="section-label">Canal Recording</p>
+      <h2 class="section-title">Sets en ligne</h2>
+      <p style="color:var(--muted);font-size:13px;line-height:1.8;margin-bottom:40px;max-width:400px;">Les enregistrements de nos résident·e·s et invité·e·s, disponibles en streaming. Une archive sonore vivante du Canal 54.</p>
+      <div class="sets-list" id="sets-list"></div>
+      <div style="margin-top:32px;"><a href="#" class="btn-ghost">Tous les sets →</a></div>
+    </div>
+    <div class="recording-visual">
+      <div class="vinyl">
+        <div class="vinyl-label">
+          <svg viewBox="0 0 1190 185.265" xmlns="http://www.w3.org/2000/svg" style="width:70%;fill:var(--cream);">
+            <path d="M94.098,143.965c-29.692,0-41.568-18.752-41.568-52.149c0-33.909,12.865-51.738,42.807-51.738c28.706,0,38.108,11.376,40.086,34.376h44.788c-3.465-45-26.725-70.727-85.615-70.727c-63.594,0-87.598,42.588-87.598,86.634c0,45.276,23.753,88.983,87.349,88.983c60.376,0,82.894-26.89,86.856-68.89h-45.286C134.188,132.455,123.547,143.965,94.098,143.965z"/>
+            <polygon points="771.009,132.455 771.009,15.455 728.009,15.455 728.009,130.857 728.009,131.5 728.009,172.455 771.864,172.455 841.009,172.455 841.009,172.455 841.009,132.455 841.009,132.455"/>
+            <polygon points="194.009,14.455 194.009,59.455 273.441,59.455 191.69,139.903 222.904,171.644 305.009,89.446 305.009,172.455 346.009,172.455 346.009,51.923 346.009,14.455 310.126,14.455"/>
+            <polygon points="550.009,14.455 550.009,59.455 629.162,59.455 548.582,139.903 579.349,171.644 661.009,89.187 661.009,172.455 702.009,172.455 702.009,51.923 702.009,14.455 667.017,14.455"/>
+            <path d="M1152.009,101.455v-87h-60.544h-0.296h-0.261l-66.863,95.452l-0.082,29.548h85.046v36h43v-36h30v-32.614v-5.386H1152.009z M1109.009,101.455h-31.195l31.195-48.757V101.455z"/>
+            <path d="M949.29,63.437c-17.915,0-30.235,3.797-38.171,12.631l1.614-25.613h84.276v-36h-121.33l-5.17,86.213l0,0l-0.407,9.787h41.429c4.575-9,12.456-11.346,28.354-11.346c17.827,0,26.809,3.376,26.809,20.236c0,17.833-8.913,24.838-29.389,24.838c-18.548,0-26.012-4.728-27.696-19.728h-44.323c0.961,31,20.954,50.513,69.128,50.513c50.102,0,74.673-20.383,74.673-57.001C1009.085,83.043,982.291,63.437,949.29,63.437z"/>
+            <polygon points="484.547,15.455 484.311,15.455 412.009,105.839 412.009,15.455 371.009,15.455 371.009,172.455 411.728,172.455 411.728,172.455 483.009,80.701 483.009,172.455 524.009,172.455 524.009,15.455 484.584,15.455"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BAR -->
+<section id="bar">
+  <div class="bar-layout">
+    <div>
+      <p class="section-label">Le Bar</p>
+      <h2 class="section-title">Bd St-George 54</h2>
+      <p style="color:var(--muted);font-size:13px;line-height:1.8;max-width:400px;">Un café culturel ouvert à toutes et tous. On y sert des bons drinks, on écoute de la bonne musique, et on se retrouve dans une atmosphère chaleureuse au cœur de Genève.</p>
+      <div class="hours-block">
+        <div class="hours-row"><span class="hours-day">Lundi</span><span style="color:var(--cream)">17h00 – 00h00</span></div>
+        <div class="hours-row"><span class="hours-day">Mardi</span><span style="color:var(--cream)">17h00 – 00h00</span></div>
+        <div class="hours-row"><span class="hours-day">Mercredi</span><span style="color:var(--cream)">17h00 – 00h00</span></div>
+        <div class="hours-row today"><span class="hours-day">Jeudi · aujourd'hui</span><span style="color:var(--cream)">17h00 – 00h00</span></div>
+        <div class="hours-row"><span class="hours-day">Vendredi</span><span style="color:var(--cream)">17h00 – 02h00</span></div>
+        <div class="hours-row"><span class="hours-day">Samedi</span><span style="color:var(--cream)">17h00 – 02h00</span></div>
+        <div class="hours-row"><span class="hours-day" style="color:rgba(107,101,87,0.45)">Dimanche</span><span style="color:rgba(107,101,87,0.45)">Fermé</span></div>
+      </div>
+      <div class="social-links">
+        <a href="https://www.instagram.com/c_a_n_a_l_54/" class="social-link" target="_blank">IG</a>
+        <a href="https://soundcloud.com/canal54" class="social-link" target="_blank">SC</a>
+        <a href="#" data-email="contact@canal54.ch" class="social-link email-link">@</a>
+      </div>
+    </div>
+    <div>
+      <div class="map-placeholder"><div class="map-grid"></div><div class="map-pin"><div class="map-pin-dot"></div><p class="map-pin-label">Canal 54</p></div></div>
+      <div class="address-block"><p class="address-label">Adresse</p><p class="address-text">Boulevard<br>Saint-George 54<br>1205 Genève</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOP -->
+<section id="shop">
+  <p class="section-label">Shop</p>
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;">
+    <h2 class="section-title">Merch</h2>
+    <a href="#" class="btn-ghost">Voir tout →</a>
+  </div>
+  <div class="shop-grid" id="shop-grid"></div>
+</section>
+
+<!-- NEWSLETTER -->
+<section id="newsletter">
+  <p class="section-label" style="justify-content:center;margin-bottom:24px;">Newsletter</p>
+  <h2 class="nl-title">Restez dans la boucle</h2>
+  <p class="nl-sub">Programme mensuel, nouveaux sets, news du Canal 54.</p>
+  <div class="nl-form"><input type="email" class="nl-input" placeholder="votre@email.ch"><button class="nl-btn">S'inscrire</button></div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <svg class="logo-svg logo-svg-footer" viewBox="0 0 1190 185.265" xmlns="http://www.w3.org/2000/svg">
+    <path d="M94.098,143.965c-29.692,0-41.568-18.752-41.568-52.149c0-33.909,12.865-51.738,42.807-51.738c28.706,0,38.108,11.376,40.086,34.376h44.788c-3.465-45-26.725-70.727-85.615-70.727c-63.594,0-87.598,42.588-87.598,86.634c0,45.276,23.753,88.983,87.349,88.983c60.376,0,82.894-26.89,86.856-68.89h-45.286C134.188,132.455,123.547,143.965,94.098,143.965z"/>
+    <polygon points="771.009,132.455 771.009,15.455 728.009,15.455 728.009,130.857 728.009,131.5 728.009,172.455 771.864,172.455 841.009,172.455 841.009,172.455 841.009,132.455 841.009,132.455"/>
+    <polygon points="194.009,14.455 194.009,59.455 273.441,59.455 191.69,139.903 222.904,171.644 305.009,89.446 305.009,172.455 346.009,172.455 346.009,51.923 346.009,14.455 310.126,14.455"/>
+    <polygon points="550.009,14.455 550.009,59.455 629.162,59.455 548.582,139.903 579.349,171.644 661.009,89.187 661.009,172.455 702.009,172.455 702.009,51.923 702.009,14.455 667.017,14.455"/>
+    <path d="M1152.009,101.455v-87h-60.544h-0.296h-0.261l-66.863,95.452l-0.082,29.548h85.046v36h43v-36h30v-32.614v-5.386H1152.009z M1109.009,101.455h-31.195l31.195-48.757V101.455z"/>
+    <path d="M949.29,63.437c-17.915,0-30.235,3.797-38.171,12.631l1.614-25.613h84.276v-36h-121.33l-5.17,86.213l0,0l-0.407,9.787h41.429c4.575-9,12.456-11.346,28.354-11.346c17.827,0,26.809,3.376,26.809,20.236c0,17.833-8.913,24.838-29.389,24.838c-18.548,0-26.012-4.728-27.696-19.728h-44.323c0.961,31,20.954,50.513,69.128,50.513c50.102,0,74.673-20.383,74.673-57.001C1009.085,83.043,982.291,63.437,949.29,63.437z"/>
+    <polygon points="484.547,15.455 484.311,15.455 412.009,105.839 412.009,15.455 371.009,15.455 371.009,172.455 411.728,172.455 411.728,172.455 483.009,80.701 483.009,172.455 524.009,172.455 524.009,15.455 484.584,15.455"/>
+  </svg>
+  <ul class="footer-links">
+    <li><a href="#prog">Programme</a></li>
+    <li><a href="#recording">Recording</a></li>
+    <li><a href="#bar">Bar</a></li>
+    <li><a href="#shop">Shop</a></li>
+    <li><a href="#" data-email="contact@canal54.ch" class="email-link">Contact</a></li>
+  </ul>
+  <span class="footer-copy">© 2026 Canal 54</span>
+</footer>
+
+<!-- ===== ADMIN PANEL ===== -->
+<div id="admin-overlay">
+  <aside class="admin-sidebar">
+    <div class="admin-brand">
+      <button id="admin-fixed-close" title="Fermer">✕</button>
+      <p class="admin-brand-label">Admin Panel</p>
+      <svg style="height:18px;width:auto;fill:var(--cream);opacity:0.6;" viewBox="0 0 1190 185.265" xmlns="http://www.w3.org/2000/svg">
+        <path d="M94.098,143.965c-29.692,0-41.568-18.752-41.568-52.149c0-33.909,12.865-51.738,42.807-51.738c28.706,0,38.108,11.376,40.086,34.376h44.788c-3.465-45-26.725-70.727-85.615-70.727c-63.594,0-87.598,42.588-87.598,86.634c0,45.276,23.753,88.983,87.349,88.983c60.376,0,82.894-26.89,86.856-68.89h-45.286C134.188,132.455,123.547,143.965,94.098,143.965z"/>
+        <polygon points="771.009,132.455 771.009,15.455 728.009,15.455 728.009,130.857 728.009,131.5 728.009,172.455 771.864,172.455 841.009,172.455 841.009,172.455 841.009,132.455 841.009,132.455"/>
+        <polygon points="194.009,14.455 194.009,59.455 273.441,59.455 191.69,139.903 222.904,171.644 305.009,89.446 305.009,172.455 346.009,172.455 346.009,51.923 346.009,14.455 310.126,14.455"/>
+        <polygon points="550.009,14.455 550.009,59.455 629.162,59.455 548.582,139.903 579.349,171.644 661.009,89.187 661.009,172.455 702.009,172.455 702.009,51.923 702.009,14.455 667.017,14.455"/>
+        <path d="M1152.009,101.455v-87h-60.544h-0.296h-0.261l-66.863,95.452l-0.082,29.548h85.046v36h43v-36h30v-32.614v-5.386H1152.009z M1109.009,101.455h-31.195l31.195-48.757V101.455z"/>
+        <path d="M949.29,63.437c-17.915,0-30.235,3.797-38.171,12.631l1.614-25.613h84.276v-36h-121.33l-5.17,86.213l0,0l-0.407,9.787h41.429c4.575-9,12.456-11.346,28.354-11.346c17.827,0,26.809,3.376,26.809,20.236c0,17.833-8.913,24.838-29.389,24.838c-18.548,0-26.012-4.728-27.696-19.728h-44.323c0.961,31,20.954,50.513,69.128,50.513c50.102,0,74.673-20.383,74.673-57.001C1009.085,83.043,982.291,63.437,949.29,63.437z"/>
+        <polygon points="484.547,15.455 484.311,15.455 412.009,105.839 412.009,15.455 371.009,15.455 371.009,172.455 411.728,172.455 411.728,172.455 483.009,80.701 483.009,172.455 524.009,172.455 524.009,15.455 484.584,15.455"/>
+      </svg>
+    </div>
+    <nav class="admin-nav">
+      <button class="admin-nav-item active" id="tab-prog">
+        <span class="nav-dot"></span>Programme<span class="nav-count" id="count-prog">0</span>
+      </button>
+      <button class="admin-nav-item" id="tab-sets">
+        <span class="nav-dot"></span>Sets<span class="nav-count" id="count-sets">0</span>
+      </button>
+      <button class="admin-nav-item" id="tab-merch">
+        <span class="nav-dot"></span>Merch<span class="nav-count" id="count-merch">0</span>
+      </button>
+    </nav>
+    <div class="admin-sidebar-footer">
+      <button class="close-admin-btn" id="close-admin-btn">← Retour au site</button>
+    </div>
+  </aside>
+
+  <div class="admin-main">
+    <!-- Programme Tab -->
+    <div id="admin-prog" class="admin-tab">
+      <div class="admin-topbar">
+        <h1 class="admin-section-title">Programme</h1>
+        <div style="display:flex;gap:12px;align-items:center;">
+          <button class="btn-add" id="add-prog-btn">+ Ajouter un événement</button>
+          <button class="topbar-close-btn" id="topbar-close-btn-1" title="Fermer l'admin">✕</button>
+        </div>
+      </div>
+      <div class="admin-content">
+        <table class="admin-table" id="prog-table">
+          <thead><tr><th>Événement</th><th>Date</th><th>Genre</th><th>Heure</th><th style="width:160px;"></th></tr></thead>
+          <tbody id="prog-tbody"></tbody>
+        </table>
+        <div id="prog-empty" class="empty-state" style="display:none;"><p>Aucun événement programmé. Ajoutez-en un !</p></div>
+      </div>
+    </div>
+    <!-- Sets Tab -->
+    <div id="admin-sets" class="admin-tab" style="display:none;">
+      <div class="admin-topbar">
+        <h1 class="admin-section-title">Canal Recording</h1>
+        <div style="display:flex;gap:12px;align-items:center;">
+          <button class="btn-add" id="add-sets-btn">+ Ajouter un set</button>
+          <button class="topbar-close-btn" id="topbar-close-btn-2" title="Fermer l'admin">✕</button>
+        </div>
+      </div>
+      <div class="admin-content">
+        <table class="admin-table" id="sets-table">
+          <thead><tr><th>Artiste</th><th>Date d'enregistrement</th><th>Genre</th><th>Lien</th><th style="width:160px;"></th></tr></thead>
+          <tbody id="sets-tbody"></tbody>
+        </table>
+        <div id="sets-empty" class="empty-state" style="display:none;"><p>Aucun set enregistré. Ajoutez-en un !</p></div>
+      </div>
+    </div>
+    <!-- Merch Tab -->
+    <div id="admin-merch" class="admin-tab" style="display:none;">
+      <div class="admin-topbar">
+        <h1 class="admin-section-title">Merch</h1>
+        <div style="display:flex;gap:12px;align-items:center;">
+          <button class="btn-add" id="add-merch-btn">+ Ajouter un produit</button>
+          <button class="topbar-close-btn" id="topbar-close-btn-3" title="Fermer l'admin">✕</button>
+        </div>
+      </div>
+      <div class="admin-content">
+        <table class="admin-table" id="merch-table">
+          <thead><tr><th>Produit</th><th>Prix</th><th>Type</th><th>Badge</th><th style="width:160px;"></th></tr></thead>
+          <tbody id="merch-tbody"></tbody>
+        </table>
+        <div id="merch-empty" class="empty-state" style="display:none;"><p>Aucun produit dans la boutique. Ajoutez-en un !</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modal-title">Ajouter</h2>
+      <button class="modal-close" id="modal-close-btn">✕</button>
+    </div>
+    <div id="modal-body"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="modal-cancel-btn">Annuler</button>
+      <button class="btn-save" id="modal-save-btn">Sauvegarder</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DELETE -->
+<div class="modal-backdrop" id="confirm-backdrop">
+  <div class="modal" style="width:400px;">
+    <div class="modal-header">
+      <h2 class="modal-title">Confirmer la suppression</h2>
+      <button class="modal-close" id="confirm-close-btn">✕</button>
+    </div>
+    <p class="confirm-msg">Êtes-vous sûr de vouloir supprimer :</p>
+    <p class="confirm-item-name" id="confirm-name"></p>
+    <p style="color:var(--muted);font-size:12px;margin-bottom:8px;">Cette action est irréversible.</p>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="confirm-cancel-btn">Annuler</button>
+      <button class="btn-save" id="confirm-delete-btn" style="background:#b33;">Supprimer</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span class="toast-dot"></span><span id="toast-msg"></span></div>
+
+<script data-cfasync="false" type="text/javascript">
+// ===== DATA =====
+var state = {
+  prog: [
+    {id:1, name:'Truck Thomas', date:'Mer. 09 Avr 2026', genre:'Techno', time:'23h00'},
+    {id:2, name:'Nuit Analogique', date:'Ven. 11 Avr 2026', genre:'Électronique', time:'22h00'},
+    {id:3, name:'Didier', date:'Sam. 12 Avr 2026', genre:'House', time:'23h30'},
+    {id:4, name:'Le Collectif', date:'Mer. 16 Avr 2026', genre:'Ambient', time:'21h00'},
+    {id:5, name:'Fête du Printemps', date:'Ven. 18 Avr 2026', genre:'Soirée Spéciale', time:'22h30'},
+    {id:6, name:'Canal B2B', date:'Sam. 19 Avr 2026', genre:'Disco / Funk', time:'23h00'}
+  ],
+  sets: [
+    {id:1, artist:'Truck Thomas', date:'23.04.2025', genre:'Techno', link:''},
+    {id:2, artist:'Didier', date:'18.04.2025', genre:'House', link:''},
+    {id:3, artist:'Nuit Blanche', date:'05.03.2025', genre:'Ambient', link:''},
+    {id:4, artist:'Le Collectif', date:'14.02.2025', genre:'Électronique', link:''}
+  ],
+  merch: [
+    {id:1, name:'T-Shirt Launch Edition', price:'45', type:'tshirt', badge:'Limited', color:'#1a1a16'},
+    {id:2, name:'T-Shirt Rust', price:'45', type:'tshirt', badge:'', color:'#c44a1f'},
+    {id:3, name:'Tote Bag', price:'25', type:'totebag', badge:'', color:'#1a1a16'}
+  ]
+};
+var nid = {prog:20, sets:20, merch:20};
+var currentTab = 'prog';
+var editId = null;
+var delTarget = null;
+
+// ===== PUBLIC RENDER =====
+function tshirtSVG(c) {
+  return '<svg class="tshirt-svg" viewBox="0 0 200 180" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M70 20 L30 50 L10 100 L50 110 L50 160 L150 160 L150 110 L190 100 L170 50 L130 20 L110 40 Q100 50 90 40 Z" fill="'+c+'" stroke="rgba(240,235,224,0.2)" stroke-width="1"/><text x="100" y="108" text-anchor="middle" fill="rgba(196,74,31,0.9)" font-family="Bebas Neue,sans-serif" font-size="12" letter-spacing="2">CANAL 54</text></svg>';
+}
+function totebagSVG(c) {
+  return '<svg class="tshirt-svg" viewBox="0 0 200 180" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="50" y="40" width="100" height="120" rx="2" fill="'+c+'" stroke="rgba(240,235,224,0.2)" stroke-width="1"/><path d="M70 40 Q70 20 100 20 Q130 20 130 40" stroke="rgba(240,235,224,0.3)" stroke-width="2" fill="none"/><text x="100" y="115" text-anchor="middle" fill="rgba(196,74,31,0.9)" font-family="Bebas Neue,sans-serif" font-size="13" letter-spacing="2">C54</text></svg>';
+}
+function hoodiesSVG(c) {
+  return '<svg class="tshirt-svg" viewBox="0 0 200 180" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M60 25 Q100 10 140 25 L175 55 L155 65 L155 160 L45 160 L45 65 L25 55 Z" fill="'+c+'" stroke="rgba(240,235,224,0.2)" stroke-width="1"/><path d="M75 25 Q100 40 125 25" stroke="rgba(240,235,224,0.15)" fill="none" stroke-width="1"/><text x="100" y="108" text-anchor="middle" fill="rgba(196,74,31,0.9)" font-family="Bebas Neue,sans-serif" font-size="12" letter-spacing="2">CANAL 54</text></svg>';
+}
+function getProductSVG(m) {
+  if (m.type === 'totebag') return totebagSVG(m.color);
+  if (m.type === 'hoodie') return hoodiesSVG(m.color);
+  return tshirtSVG(m.color);
+}
+
+function renderEvents() {
+  var g = document.getElementById('events-grid');
+  if (!state.prog.length) {
+    g.innerHTML = '<p style="padding:48px;color:var(--muted);grid-column:1/-1;text-align:center;letter-spacing:0.1em;">Aucun événement programmé.</p>';
+    return;
+  }
+  g.innerHTML = state.prog.map(function(e) {
+    return '<div class="event-card"><p class="event-date">'+e.date+'</p><h3 class="event-name">'+e.name+'</h3><p class="event-type">'+e.genre+'</p><span class="event-time">'+e.time+'</span></div>';
+  }).join('');
+}
+
+function renderSets() {
+  var l = document.getElementById('sets-list');
+  if (!state.sets.length) {
+    l.innerHTML = '<p style="color:var(--muted);font-size:13px;padding:20px 0;">Aucun set disponible.</p>';
+    return;
+  }
+  l.innerHTML = state.sets.map(function(s, i) {
+    return '<div class="set-item"><span class="set-num">'+String(i+1).padStart(2,'0')+'</span><div class="set-info"><p class="set-artist">'+s.artist+'</p><p class="set-date">Canal Recording · '+s.date+'</p></div><div class="set-play"><div class="play-icon"></div></div></div>';
+  }).join('');
+}
+
+function renderShop() {
+  var g = document.getElementById('shop-grid');
+  if (!state.merch.length) {
+    g.innerHTML = '<p style="padding:48px;color:var(--muted);grid-column:1/-1;text-align:center;letter-spacing:0.1em;">Aucun produit disponible.</p>';
+    return;
+  }
+  g.innerHTML = state.merch.map(function(m) {
+    return '<div class="product-card"><div class="product-img"><div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;">'
+      + getProductSVG(m) + '</div>'
+      + (m.badge ? '<span class="product-badge">'+m.badge+'</span>' : '')
+      + '</div><p class="product-name">'+m.name+'</p><p class="product-price">CHF '+m.price+'.–</p></div>';
+  }).join('');
+}
+
+function updateCounts() {
+  document.getElementById('count-prog').textContent = state.prog.length;
+  document.getElementById('count-sets').textContent = state.sets.length;
+  document.getElementById('count-merch').textContent = state.merch.length;
+}
+
+function renderAll() { renderEvents(); renderSets(); renderShop(); updateCounts(); }
+
+// ===== ADMIN TABLE RENDER =====
+function renderAdminTable(tab) {
+  updateCounts();
+  if (tab === 'prog') {
+    var empty = state.prog.length === 0;
+    document.getElementById('prog-table').style.display = empty ? 'none' : 'table';
+    document.getElementById('prog-empty').style.display = empty ? 'block' : 'none';
+    var tbody = document.getElementById('prog-tbody');
+    tbody.innerHTML = '';
+    state.prog.forEach(function(e) {
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td class="td-name">'+esc(e.name)+'</td><td class="td-muted">'+esc(e.date)+'</td><td><span class="td-badge">'+esc(e.genre)+'</span></td><td class="td-muted">'+esc(e.time)+'</td>';
+      var actions = document.createElement('td');
+      actions.innerHTML = '<div class="td-actions"></div>';
+      var editBtn = document.createElement('button'); editBtn.className = 'btn-edit'; editBtn.textContent = 'Modifier';
+      editBtn.onclick = function() { openModal('prog', e.id); };
+      var delBtn = document.createElement('button'); delBtn.className = 'btn-del'; delBtn.textContent = 'Supprimer';
+      delBtn.onclick = function() { askDelete('prog', e.id, e.name); };
+      actions.querySelector('.td-actions').append(editBtn, delBtn);
+      tr.appendChild(actions);
+      tbody.appendChild(tr);
+    });
+  } else if (tab === 'sets') {
+    var empty = state.sets.length === 0;
+    document.getElementById('sets-table').style.display = empty ? 'none' : 'table';
+    document.getElementById('sets-empty').style.display = empty ? 'block' : 'none';
+    var tbody = document.getElementById('sets-tbody');
+    tbody.innerHTML = '';
+    state.sets.forEach(function(s) {
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td class="td-name">'+esc(s.artist)+'</td><td class="td-muted">'+esc(s.date)+'</td><td><span class="td-badge">'+esc(s.genre)+'</span></td><td>'+(s.link ? '<a href="'+s.link+'" target="_blank" style="color:var(--rust);font-size:12px;">↗ écouter</a>' : '<span class="td-muted">—</span>')+'</td>';
+      var actions = document.createElement('td');
+      actions.innerHTML = '<div class="td-actions"></div>';
+      var editBtn = document.createElement('button'); editBtn.className = 'btn-edit'; editBtn.textContent = 'Modifier';
+      editBtn.onclick = function() { openModal('sets', s.id); };
+      var delBtn = document.createElement('button'); delBtn.className = 'btn-del'; delBtn.textContent = 'Supprimer';
+      delBtn.onclick = function() { askDelete('sets', s.id, s.artist); };
+      actions.querySelector('.td-actions').append(editBtn, delBtn);
+      tr.appendChild(actions);
+      tbody.appendChild(tr);
+    });
+  } else if (tab === 'merch') {
+    var empty = state.merch.length === 0;
+    document.getElementById('merch-table').style.display = empty ? 'none' : 'table';
+    document.getElementById('merch-empty').style.display = empty ? 'block' : 'none';
+    var tbody = document.getElementById('merch-tbody');
+    tbody.innerHTML = '';
+    state.merch.forEach(function(m) {
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td><div style="display:flex;align-items:center;gap:10px;"><div style="width:10px;height:10px;border-radius:50%;background:'+m.color+';border:0.5px solid rgba(240,235,224,0.25);flex-shrink:0;"></div><span class="td-name">'+esc(m.name)+'</span></div></td><td style="color:var(--rust);">CHF '+esc(m.price)+'.–</td><td><span class="td-badge">'+esc(m.type)+'</span></td><td>'+(m.badge ? '<span class="td-badge" style="background:rgba(196,74,31,0.25);">'+esc(m.badge)+'</span>' : '<span class="td-muted">—</span>')+'</td>';
+      var actions = document.createElement('td');
+      actions.innerHTML = '<div class="td-actions"></div>';
+      var editBtn = document.createElement('button'); editBtn.className = 'btn-edit'; editBtn.textContent = 'Modifier';
+      editBtn.onclick = function() { openModal('merch', m.id); };
+      var delBtn = document.createElement('button'); delBtn.className = 'btn-del'; delBtn.textContent = 'Supprimer';
+      delBtn.onclick = function() { askDelete('merch', m.id, m.name); };
+      actions.querySelector('.td-actions').append(editBtn, delBtn);
+      tr.appendChild(actions);
+      tbody.appendChild(tr);
+    });
+  }
+}
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ===== ADMIN OPEN/CLOSE =====
+function openAdmin() {
+  document.getElementById('admin-overlay').classList.add('open');
+  document.getElementById('admin-fixed-close').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  switchTab('prog');
+}
+function closeAdmin() {
+  document.getElementById('admin-overlay').classList.remove('open');
+  document.getElementById('admin-fixed-close').style.display = 'none';
+  document.body.style.overflow = '';
+  renderAll();
+}
+function switchTab(tab) {
+  currentTab = tab;
+  ['prog','sets','merch'].forEach(function(t) {
+    document.getElementById('admin-'+t).style.display = t === tab ? 'flex' : 'none';
+    document.getElementById('tab-'+t).classList.toggle('active', t === tab);
+  });
+  renderAdminTable(tab);
+}
+
+// ===== MODAL =====
+function openModal(tab, id) {
+  currentTab = tab;
+  editId = id || null;
+  var item = id ? state[tab].find(function(x){return x.id===id;}) : null;
+  var title = document.getElementById('modal-title');
+  var body = document.getElementById('modal-body');
+
+  if (tab === 'prog') {
+    title.textContent = id ? "Modifier l'événement" : "Ajouter un événement";
+    body.innerHTML =
+      '<div class="form-group"><label class="form-label">Nom de l\'événement *</label><input class="form-input" id="f-name" placeholder="ex: Truck Thomas" value="'+(item?esc(item.name):'')+'"></div>'+
+      '<div class="form-row"><div class="form-group"><label class="form-label">Date *</label><input class="form-input" id="f-date" placeholder="ex: Ven. 25 Avr 2026" value="'+(item?esc(item.date):'')+'"></div>'+
+      '<div class="form-group"><label class="form-label">Heure</label><input class="form-input" id="f-time" placeholder="ex: 23h00" value="'+(item?esc(item.time):'')+'"></div></div>'+
+      '<div class="form-group"><label class="form-label">Genre / Description</label><input class="form-input" id="f-genre" placeholder="ex: DJ Set · Techno" value="'+(item?esc(item.genre):'')+'"></div>';
+  } else if (tab === 'sets') {
+    title.textContent = id ? "Modifier le set" : "Ajouter un set";
+    body.innerHTML =
+      '<div class="form-group"><label class="form-label">Artiste *</label><input class="form-input" id="f-artist" placeholder="ex: Didier" value="'+(item?esc(item.artist):'')+'"></div>'+
+      '<div class="form-row"><div class="form-group"><label class="form-label">Date d\'enregistrement *</label><input class="form-input" id="f-date" placeholder="ex: 18.04.2025" value="'+(item?esc(item.date):'')+'"></div>'+
+      '<div class="form-group"><label class="form-label">Genre</label><input class="form-input" id="f-genre" placeholder="ex: House" value="'+(item?esc(item.genre):'')+'"></div></div>'+
+      '<div class="form-group"><label class="form-label">Lien SoundCloud / URL</label><input class="form-input" id="f-link" placeholder="https://soundcloud.com/..." value="'+(item?esc(item.link):'')+'"></div>';
+  } else if (tab === 'merch') {
+    title.textContent = id ? "Modifier le produit" : "Ajouter un produit";
+    body.innerHTML =
+      '<div class="form-group"><label class="form-label">Nom du produit *</label><input class="form-input" id="f-name" placeholder="ex: T-Shirt Launch Edition" value="'+(item?esc(item.name):'')+'"></div>'+
+      '<div class="form-row"><div class="form-group"><label class="form-label">Prix en CHF *</label><input class="form-input" id="f-price" type="number" placeholder="45" value="'+(item?esc(item.price):'')+'"></div>'+
+      '<div class="form-group"><label class="form-label">Type</label><select class="form-select" id="f-type">'+
+        ['tshirt','totebag','hoodie','autre'].map(function(v){return '<option value="'+v+'"'+(item&&item.type===v?' selected':'')+'>'+({tshirt:'T-Shirt',totebag:'Tote Bag',hoodie:'Hoodie',autre:'Autre'}[v])+'</option>';}).join('')+
+      '</select></div></div>'+
+      '<div class="form-row"><div class="form-group"><label class="form-label">Couleur</label><input class="form-input" id="f-color" type="color" value="'+(item?item.color:'#1a1a16')+'" style="height:44px;padding:4px 8px;cursor:pointer;"></div>'+
+      '<div class="form-group"><label class="form-label">Badge promo (optionnel)</label><input class="form-input" id="f-badge" placeholder="ex: Limited, New, Sale…" value="'+(item?esc(item.badge):'')+'"></div></div>';
+  }
+  document.getElementById('modal-backdrop').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal-backdrop').classList.remove('open');
+  editId = null;
+}
+
+function saveItem() {
+  var tab = currentTab;
+  if (tab === 'prog') {
+    var name = document.getElementById('f-name').value.trim();
+    var date = document.getElementById('f-date').value.trim();
+    var time = document.getElementById('f-time').value.trim();
+    var genre = document.getElementById('f-genre').value.trim();
+    if (!name || !date) { showToast('Nom et date sont requis'); return; }
+    if (editId) {
+      var item = state.prog.find(function(x){return x.id===editId;});
+      item.name=name; item.date=date; item.time=time; item.genre=genre;
+      showToast('Événement modifié');
+    } else {
+      state.prog.push({id:nid.prog++, name:name, date:date, time:time, genre:genre});
+      showToast('Événement ajouté');
+    }
+  } else if (tab === 'sets') {
+    var artist = document.getElementById('f-artist').value.trim();
+    var date = document.getElementById('f-date').value.trim();
+    var genre = document.getElementById('f-genre').value.trim();
+    var link = document.getElementById('f-link').value.trim();
+    if (!artist || !date) { showToast('Artiste et date sont requis'); return; }
+    if (editId) {
+      var item = state.sets.find(function(x){return x.id===editId;});
+      item.artist=artist; item.date=date; item.genre=genre; item.link=link;
+      showToast('Set modifié');
+    } else {
+      state.sets.push({id:nid.sets++, artist:artist, date:date, genre:genre, link:link});
+      showToast('Set ajouté');
+    }
+  } else if (tab === 'merch') {
+    var name = document.getElementById('f-name').value.trim();
+    var price = document.getElementById('f-price').value.trim();
+    var type = document.getElementById('f-type').value;
+    var color = document.getElementById('f-color').value;
+    var badge = document.getElementById('f-badge').value.trim();
+    if (!name || !price) { showToast('Nom et prix sont requis'); return; }
+    if (editId) {
+      var item = state.merch.find(function(x){return x.id===editId;});
+      item.name=name; item.price=price; item.type=type; item.color=color; item.badge=badge;
+      showToast('Produit modifié');
+    } else {
+      state.merch.push({id:nid.merch++, name:name, price:price, type:type, color:color, badge:badge});
+      showToast('Produit ajouté');
+    }
+  }
+  closeModal();
+  renderAll();
+  renderAdminTable(tab);
+}
+
+// ===== DELETE =====
+function askDelete(tab, id, name) {
+  delTarget = {tab:tab, id:id};
+  document.getElementById('confirm-name').textContent = name;
+  document.getElementById('confirm-backdrop').classList.add('open');
+}
+function closeConfirm() { document.getElementById('confirm-backdrop').classList.remove('open'); delTarget = null; }
+function confirmDelete() {
+  if (!delTarget) return;
+  state[delTarget.tab] = state[delTarget.tab].filter(function(x){return x.id !== delTarget.id;});
+  closeConfirm();
+  renderAll();
+  renderAdminTable(currentTab);
+  showToast('Élément supprimé');
+}
+
+// ===== TOAST =====
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 2800);
+}
+
+// ===== WIRE UP ALL EVENTS (no inline onclick) =====
+document.getElementById('open-admin-btn').addEventListener('click', openAdmin);
+document.getElementById('admin-fixed-close').addEventListener('click', closeAdmin);
+document.getElementById('close-admin-btn').addEventListener('click', closeAdmin);
+document.getElementById('topbar-close-btn-1').addEventListener('click', closeAdmin);
+document.getElementById('topbar-close-btn-2').addEventListener('click', closeAdmin);
+document.getElementById('topbar-close-btn-3').addEventListener('click', closeAdmin);
+document.getElementById('tab-prog').addEventListener('click', function(){ switchTab('prog'); });
+document.getElementById('tab-sets').addEventListener('click', function(){ switchTab('sets'); });
+document.getElementById('tab-merch').addEventListener('click', function(){ switchTab('merch'); });
+document.getElementById('add-prog-btn').addEventListener('click', function(){ openModal('prog', null); });
+document.getElementById('add-sets-btn').addEventListener('click', function(){ openModal('sets', null); });
+document.getElementById('add-merch-btn').addEventListener('click', function(){ openModal('merch', null); });
+document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+document.getElementById('modal-cancel-btn').addEventListener('click', closeModal);
+document.getElementById('modal-save-btn').addEventListener('click', saveItem);
+document.getElementById('confirm-close-btn').addEventListener('click', closeConfirm);
+document.getElementById('confirm-cancel-btn').addEventListener('click', closeConfirm);
+document.getElementById('confirm-delete-btn').addEventListener('click', confirmDelete);
+
+// ===== INIT =====
+document.querySelectorAll('.email-link').forEach(function(a) {
+  a.href = 'mailto:' + a.getAttribute('data-email');
+});
+renderAll();
+</script>
+</body>
+</html>
